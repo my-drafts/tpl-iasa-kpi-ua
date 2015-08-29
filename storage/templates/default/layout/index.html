@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{{ meta.title }}</title>
+		<meta name="description" content="{{ meta.description }}" />
+		<meta name="keywords" content="{{ meta.keywords }}" />
+		<meta name="author" content="{{ meta.author }}">
+		<meta name="generator" content="{{ meta.generator }}" />
+
+		<base href="http://iasa.kpi.ua/" />
+		<!-- IE -->
+		<link rel="shortcut icon" type="image/x-icon" href="/templates/default/ico/favicon.ico" />
+		<!-- other browsers -->
+		<link rel="icon" type="image/x-icon" href="/templates/default/ico/favicon.ico" />
+		<link rel="apple-touch-icon" href="/templates/default/ico/apple-favicon.png" />
+
+		<link rel="stylesheet" href="/templates/default/css/default.css" />
+		<script type="text/javascript" src="/templates/default/js/default.js"></script>
+
+		{% for s in style %}
+		<link rel="stylesheet" href="{{ s }}" />
+		{% endfor %}
+		<style type="text/css">
+			{% for s in css %}
+			{{ s }}
+			{% endfor %}
+		</style>
+
+		{% for s in scripts %}
+		<script type="text/javascript" src="{{s}}"></script>
+		{% endfor %}
+	</head>
+	<body>
+		<div id="body">
+			<div id="header">{% block header %}{% endblock %}</div>
+			<div id="middle">{% block middle %}{% endblock %}</div>
+			<div id="footer">{% block footer %}{% endblock %}</div>
+		</div>
+	</body>
+</html>

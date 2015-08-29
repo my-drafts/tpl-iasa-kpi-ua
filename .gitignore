@@ -1,3 +1,5 @@
-nodeJS
+.git/*
 .idea/*
+others
 node_modules/*
+config.js

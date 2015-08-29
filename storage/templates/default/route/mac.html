@@ -1,0 +1,22 @@
+{% extends "../layout/index.html" %}
+
+{% block middle %}
+<table>
+	<tr>
+		<td>id</td>
+		<td>mac</td>
+		<td>starts</td>
+		<td>ends</td>
+		<td>modified</td>
+	</tr>
+	{% for item in items %}
+	<tr>
+		<td>{{ item._id }}</td>
+		<td>{{ item.mac }}</td>
+		<td>{{ item.starts }}</td>
+		<td>{{ item.ends }}</td>
+		<td>{{ item.lastModified }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
