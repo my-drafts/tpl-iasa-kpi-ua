@@ -2,11 +2,11 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>{{ meta.title }}</title>
-		<meta name="description" content="{{ meta.description }}" />
-		<meta name="keywords" content="{{ meta.keywords }}" />
-		<meta name="author" content="{{ meta.author }}">
-		<meta name="generator" content="{{ meta.generator }}" />
+		<title>{{ meta.title|default('title') }}</title>
+		<meta name="description" content="{{ meta.description|default('description') }}" />
+		<meta name="keywords" content="{{ meta.keywords|default('keywords') }}" />
+		<meta name="author" content="{{ meta.author|default('author') }}">
+		<meta name="generator" content="{{ meta.generator|default('generator') }}" />
 
 		<base href="http://iasa.kpi.ua/" />
 		<!-- IE -->
@@ -18,18 +18,11 @@
 		<link rel="stylesheet" href="/templates/default/css/default.css" />
 		<script type="text/javascript" src="/templates/default/js/default.js"></script>
 
-		{% for s in style %}
-		<link rel="stylesheet" href="{{ s }}" />
-		{% endfor %}
+		{% block style %}{% endblock %}
 		<style type="text/css">
-			{% for s in css %}
-			{{ s }}
-			{% endfor %}
+			{% block css %}{% endblock %}
 		</style>
-
-		{% for s in scripts %}
-		<script type="text/javascript" src="{{s}}"></script>
-		{% endfor %}
+		{% block scripts %}{% endblock %}
 	</head>
 	<body>
 		<div id="body">

@@ -1,0 +1,44 @@
+{% extends "templates/default/layout/index-ru.html" %}
+
+{% set meta.title = "macs" %}
+{% set meta.description = "macs" %}
+
+{% block style %}{% endblock %}
+{% block css %}
+
+table#macs {
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 100%;
+}
+table#macs td {
+	border: 1px solid #eee;
+}
+table#macs tr:first-child  td {
+	font-weight: bolder;
+	text-align: center !important;
+}
+{% endblock %}
+
+{% block scripts %}{% endblock %}
+
+{% block content %}
+<table id="macs">
+	<tr>
+		<td class="id">id</td>
+		<td class="mac">mac</td>
+		<td class="starts">starts</td>
+		<td class="ends">ends</td>
+		<td class="modified">modified</td>
+	</tr>
+	{% for item in items %}
+	<tr>
+		<td class="id">{{ item._id|safe }}</td>
+		<td class="mac">{{ item.mac|safe }}</td>
+		<td class="starts"><span title="{{ item.starts|date('Y-m-d H:i:s') }}">{{ item.starts|date('Y-m-d') }}</span></td>
+		<td class="ends"><span title="{{ item.ends|date('Y-m-d H:i:s') }}">{{ item.ends|date('Y-m-d') }}</span></td>
+		<td class="modified"><div title="{{ item.lastModified|date('Y-m-d H:i:s') }}">{{ item.lastModified|date('Y-m-d') }}</div></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 var hapi = require('hapi');
+var swig = require('swig');
 var handlebars = require('handlebars');
-var nunjucks = require('nunjucks');
-var jinja = require('jinja');
 var path = require('path');
 var fs = require('fs');
 var mime = require('mime');
@@ -46,27 +45,13 @@ server.register(require('vision'), function (error) {
 	if (error) throw error;
 	console.log(['log'], 'Vision loaded');
 	server.views({
-		relativeTo: server.settings.app.storage,
-		path: './templates/default',
-		//layoutPath: './templates/default/layout',
-		//helpersPath: './templates/default/helper',
-		allowAbsolutePaths: false,
-		//layout: 'layout-index',
 		engines: {
-			shtml: handlebars,
-			html: jinja,
-			xhtml: {
-				compile: function (src, options) {
-					var template = nunjucks.compile(src, options.environment);
-					return function (context) {
-						return template.render(context);
-					};
-				},
-				prepare: function (options, next) {
-					options.compileOptions.environment = nunjucks.configure(options.path, {watch: false});
-					return next();
-				}
-			}
+			html: new swig.Swig({
+				cache: false,
+				locals: { meta: {} },
+				loader: swig.loaders.fs(server.settings.app.storage)
+			}),
+			shtml: handlebars
 		}
 	});
 });
@@ -81,18 +66,27 @@ server.start(function (err){
 	console.log(['log'], 'Server started at: ' + server.info.uri);
 });
 
+// route: test
 server.route({
 	method: 'GET',
 	path: '/test/{path*}',
-	handler: function (req, res) { res('Test: ok!\n' + req.params.path).type('text/plain'); }
+	handler: function (req, res) {
+		var text = 'Test: ok!\n';
+		text += 'path: ' + JSON.stringify(req.params.path) + '\n';
+		text += 'query: ' + JSON.stringify(req.query) + '\n';
+		res(text).type('text/plain');
+	},
+	config: {
+		pre: [
+			{
+				method: require('./lib/preRoute').langCheck,
+				assign: 'langCheck'
+			}
+		]
+	}
 });
 
-server.route({
-	method: 'GET',
-	path: '/',
-	handler: function (req, res) { res.redirect('/index.html'); }
-});
-
+// route: static storage
 server.route({
 	method: 'GET',
 	path: '/storage/{param*}',
@@ -105,6 +99,14 @@ server.route({
 	handler: { directory: { path: './templates', index: false, lookupCompressed: true } }
 });
 
+// route: front page
+server.route({
+	method: 'GET',
+	path: '/',
+	handler: function (req, res) { res.redirect('/index.html'); }
+});
+
+// route: unknown
 server.route({
 	method: 'GET',
 	path: '/{path*}',
@@ -114,15 +116,16 @@ server.route({
 	}
 });
 
+// route: macs
 server.route({
 	method: 'GET',
-	path: '/mac',
+	path: '/mac-ru.html',
 	handler: function (req, res) {
 		var device = mdb.collection('device');
-		device.find({}, {sort: {lastModified: -1}, limit: 3})
+		device.find({}, {sort: {lastModified: -1}, limit: 500})
 			.toArray()
 			.then(function (items) {
-				res.view('route/mac.html', { items: items });
+				res.view('templates/default/route/mac-ru.html', { items: items });
 			});
 	}
 });
